@@ -1,0 +1,7 @@
+.idea
+.DS_Store
+
+# Backend Python
+backend/.venv3
+backend/.coverage
+*__pycache__/
