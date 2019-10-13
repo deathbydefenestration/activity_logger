@@ -1,0 +1,16 @@
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+
+app = Flask(__name__)
+app.config.from_object('config')
+db = SQLAlchemy(app)
+
+
+def create_app():
+    db.init_app(app)
+    app.app_context().push()
+
+    with app.app_context():
+        db.create_all()
+
+    return app
