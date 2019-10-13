@@ -1,9 +1,9 @@
 from datetime import datetime
 from decimal import Decimal
 
-from flask import Blueprint, jsonify, request, g
+from flask import Blueprint, jsonify, request
 
-from src.db_models.activity import Activity
+from src.repositories.activity_repository import ActivityRepository
 
 api = Blueprint('api', __name__, url_prefix='/api')
 
@@ -20,18 +20,16 @@ def activities():
 def _add_activity(api_input):
     try:
         athlete_id = api_input.get('athlete_id')
-        activity = Activity(
+        activity_repository = ActivityRepository()
+        activity_repository.add(
             athlete_id=athlete_id,
             type=api_input.get('activity_type'),
             date=datetime.strptime(api_input.get('activity_date'), '%Y-%m-%d'),
             distance=Decimal(api_input.get('activity_distance')),
             duration=Decimal(api_input.get('activity_duration'))
         )
-        g.db.session.add(activity)
-        g.db.session.commit()
-
-        activities_for_athlete = g.db.session.query(Activity).filter_by(athlete_id=athlete_id).all()
-        response_json = _serialise_model_query_into_json(data_list=activities_for_athlete)
+        athlete_activities = activity_repository.fetch_all_activities_by_athlete_id(athlete_id)
+        response_json = _serialise_model_query_into_json(data_list=athlete_activities)
         return _api_success(response_json)
 
     except Exception as e:
