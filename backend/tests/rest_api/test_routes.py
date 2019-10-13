@@ -1,4 +1,12 @@
+from datetime import date
+from decimal import Decimal
 from unittest import TestCase
+
+from flask import json, g
+
+from src.db_models.activity import Base as ActivityBase, Activity, ActivityType
+from src.db_models.athlete import engine, Base as AthleteBase, Athlete
+from src.db_models.user import User, Base as UserBase
 
 from src import create_app
 
@@ -8,10 +16,52 @@ class TestAPI(TestCase):
     def setUp(self):
         self.app = create_app()
         self.client = self.app.test_client
+        UserBase.metadata.create_all(engine)
+        AthleteBase.metadata.create_all(engine)
+        ActivityBase.metadata.create_all(engine)
 
-    def test_api_response_is_ok(self):
-        response = self.client().post('/api/hello')
-        value = response.json.get('hello')
+        self.user = User(
+            first_name='Dina',
+            last_name='Asher-Smith',
+            type='athlete'
+        )
+        g.db.session.add(self.user)
+        g.db.session.commit()
 
+        self.athlete = Athlete(
+            user_id=self.user.id,
+            weight=Decimal('57.83')
+        )
+        g.db.session.add(self.athlete)
+        g.db.session.commit()
+
+        self.headers = {'content-type': 'application/json'}
+
+    def tearDown(self):
+        AthleteBase.metadata.drop_all(engine)
+        UserBase.metadata.drop_all(engine)
+        ActivityBase.metadata.drop_all(engine)
+
+    def test_activities_api_can_add_an_activity(self):
+        payload = {
+            'athlete_id': self.athlete.id,
+            'operation': 'add',
+            'activity_type': 'run',
+            'activity_date': '2019-09-27',
+            'activity_distance': '100',
+            'activity_duration': '10.83'
+        }
+        response = self.client().post(
+            '/api/activities', data=json.dumps(payload), headers=self.headers
+        )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual('me', value)
+
+        all_activities = g.db.session.query(Activity).all()
+        self.assertEqual(1, len(all_activities))
+
+        activity = all_activities[0]
+        self.assertEqual(self.athlete.id, activity.athlete_id)
+        self.assertEqual(ActivityType.run.value, activity.type)
+        self.assertEqual(date(year=2019, month=9, day=27), activity.date)
+        self.assertEqual(Decimal('100.00'), activity.distance)
+        self.assertEqual(Decimal('10.83'), activity.duration)

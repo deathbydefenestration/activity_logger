@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, g
 from flask_sqlalchemy import SQLAlchemy
 
 from src.rest_api.routes import api
@@ -16,4 +16,5 @@ def create_app():
         db.create_all()
 
     app.register_blueprint(api)
+    g.db = db
     return app
