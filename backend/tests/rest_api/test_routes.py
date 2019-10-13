@@ -65,3 +65,20 @@ class TestAPI(TestCase):
         self.assertEqual(date(year=2019, month=9, day=27), activity.date)
         self.assertEqual(Decimal('100.00'), activity.distance)
         self.assertEqual(Decimal('10.83'), activity.duration)
+
+    def test_activities_api_returns_error_for_incomplete_activity(self):
+        payload = {
+            'athlete_id': self.athlete.id,
+            'operation': 'add',
+        }
+
+        response = self.client().post(
+            '/api/activities', data=json.dumps(payload), headers=self.headers
+        )
+
+        all_activities = g.db.session.query(Activity).all()
+        self.assertEqual(0, len(all_activities))
+
+        response_json = response.get_json()
+        self.assertIsNotNone(response_json['error'])
+        self.assertEqual(400, response.status_code)

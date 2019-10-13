@@ -4,7 +4,7 @@ import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 # Enable debug mode: also enables auto-reload upon saving
-DEBUG = True
+DEBUG = False
 
 # Secret key for session management.
 SECRET_KEY = 'fireman_sam'
