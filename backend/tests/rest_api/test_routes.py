@@ -37,13 +37,7 @@ class TestAPI(TestCase):
 
         self.headers = {'content-type': 'application/json'}
 
-    def tearDown(self):
-        AthleteBase.metadata.drop_all(engine)
-        UserBase.metadata.drop_all(engine)
-        ActivityBase.metadata.drop_all(engine)
-
-    def test_activities_api_can_add_an_activity(self):
-        payload = {
+        self.payload = {
             'athlete_id': self.athlete.id,
             'operation': 'add',
             'activity_type': 'run',
@@ -51,8 +45,16 @@ class TestAPI(TestCase):
             'activity_distance': '100',
             'activity_duration': '10.83'
         }
+        self.data = json.dumps(self.payload)
+
+    def tearDown(self):
+        AthleteBase.metadata.drop_all(engine)
+        UserBase.metadata.drop_all(engine)
+        ActivityBase.metadata.drop_all(engine)
+
+    def test_activities_api_can_add_an_activity(self):
         response = self.client().post(
-            '/api/activities', data=json.dumps(payload), headers=self.headers
+            '/api/activities', data=self.data, headers=self.headers
         )
         self.assertEqual(response.status_code, 200)
 
@@ -82,3 +84,20 @@ class TestAPI(TestCase):
         response_json = response.get_json()
         self.assertIsNotNone(response_json['error'])
         self.assertEqual(400, response.status_code)
+
+    def test_activities_api_returns_the_activity_as_json_if_successful(self):
+        response = self.client().post(
+            '/api/activities', data=self.data, headers=self.headers
+        )
+        self.assertEqual(response.status_code, 200)
+
+        response_json = response.get_json()
+        expected_number_of_results = 1
+        self.assertEqual(expected_number_of_results, len(response_json))
+
+        result = response_json[0]
+        self.assertEqual(str(self.athlete.id), result['athlete_id'])
+        self.assertEqual('2019-09-27', result['date'])
+        self.assertEqual('100.00', result['distance'])
+        self.assertEqual('10.83', result['duration'])
+        self.assertEqual('run', result['type'])
