@@ -5,7 +5,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
 import config
-from db_models.athlete import Athlete
+from src.db_models.athlete import Athlete
 
 Base = declarative_base()
 

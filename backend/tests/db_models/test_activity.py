@@ -2,9 +2,9 @@ from datetime import date
 from decimal import Decimal
 from unittest import TestCase
 
-from db_models.activity import Base as ActivityBase, Activity, ActivityType
-from db_models.athlete import engine, Base as AthleteBase, Athlete
-from db_models.user import User, Base as UserBase
+from src.db_models.activity import Base as ActivityBase, Activity, ActivityType
+from src.db_models.athlete import engine, Base as AthleteBase, Athlete
+from src.db_models.user import User, Base as UserBase
 from src import db
 
 

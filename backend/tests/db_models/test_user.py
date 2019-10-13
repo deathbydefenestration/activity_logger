@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from db_models.user import User, UserType, engine, Base
+from src.db_models.user import User, UserType, engine, Base
 from src import db
 
 

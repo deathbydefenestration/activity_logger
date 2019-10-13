@@ -3,7 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
 import config
-from db_models.user import User
+from src.db_models.user import User
 
 Base = declarative_base()
 
