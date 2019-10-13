@@ -101,3 +101,4 @@ class TestAPI(TestCase):
         self.assertEqual('100.00', result['distance'])
         self.assertEqual('10.83', result['duration'])
         self.assertEqual('run', result['type'])
+        self.assertEqual('50.191', result['calories_burned'])

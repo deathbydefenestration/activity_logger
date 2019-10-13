@@ -7,6 +7,10 @@ from src.repositories.activity_repository import ActivityRepository
 
 api = Blueprint('api', __name__, url_prefix='/api')
 
+ADDITIONAL_MODEL_PROPERTIES = [
+    'calories_burned'
+]
+
 
 @api.route('/activities', methods=['POST'])
 def activities():
@@ -56,6 +60,10 @@ def _serialise_model_query_into_json(data_list):
             if __is_a_field_in_db_model(field):
                 fields[field] = str(value)
         results_list.append(fields)
+        for additional_property in ADDITIONAL_MODEL_PROPERTIES:
+            if additional_property in dir(db_model):
+                value = getattr(db_model, additional_property)
+                fields[additional_property] = str(value)
     return jsonify(results_list)
 
 

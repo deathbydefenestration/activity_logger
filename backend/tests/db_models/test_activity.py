@@ -62,3 +62,7 @@ class TestActivityModel(TestCase):
         # Assert Relationships
         self.assertEqual(self.athlete, activity.athlete)
         self.assertEqual(self.user, activity.athlete.user)
+
+        # Assert HybridProperties
+        expected_calories_burned = Decimal('49.686')
+        self.assertEqual(expected_calories_burned, activity.calories_burned)
