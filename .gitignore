@@ -1,5 +1,5 @@
 .idea
-.DS_Store
+*DS_Store
 
 # Backend Python
 backend/.venv3
@@ -7,3 +7,32 @@ backend/.coverage
 *__pycache__/
 *.pyc
 *.db
+
+
+
+## Frontend React
+frontend/package-lock.json
+
+# dependencies
+frontend/node_modules
+frontend/.pnp
+frontend/.pnp.js
+
+# testing
+frontend/coverage
+
+# production
+frontend/build
+
+# misc
+*env.local
+*env.development.local
+*env.test.local
+*env.production.local
+
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# VSCode
+frontend/.vscode
