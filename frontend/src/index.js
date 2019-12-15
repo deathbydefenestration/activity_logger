@@ -4,7 +4,14 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+// REMOVE THIS AFTER TESTING - THIS IS SO THE APP RUNS
+const mockUser = {
+    id: 127,
+    name: 'Michael Jordan',
+    athlete_id: 25
+  }
+
+ReactDOM.render(<App user={mockUser}/>, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
